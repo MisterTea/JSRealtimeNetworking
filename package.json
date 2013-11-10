@@ -1,0 +1,45 @@
+{
+  "name": "frightcycle",
+  "version": "0.0.1",
+  "author": "Jason Gauci <jgmath2000@gmail.com>",
+  "description": "FrightCycle: A demonstration of real-time broadcast network programming in javascript",
+  "bin": {
+  },
+  "scripts": {
+    "client": "node build.js",
+    "server": "node server/app.js",
+    "test": "node test/test-sync.js",
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MisterTea/JSRealtimeNetworking.git"
+  },
+  "keywords": [
+    "realtime",
+    "multiplayer",
+    "networking"
+  ],
+  "dependencies" : {
+		"browserify":"*",
+		"browserify-shim":"*",
+		"socket.io-client":"*",
+		"hiredis": "*",
+		"msgpack": "*",
+		"chance": "*",
+		"clone": "*",
+		"class.js": "*",
+		"socket.io" : "*",
+		"expect.js" : "*",
+   	"express": "3.4.1",
+   	"ejs": "*",
+   	"css": "*",
+		"underscore": "*",
+    "graphlib":"*",
+		"deep-equal":"*",
+		"watchjs":"*"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.6"
+  }
+}

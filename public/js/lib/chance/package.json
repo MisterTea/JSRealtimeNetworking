@@ -1,0 +1,60 @@
+{
+  "name": "chance",
+  "main": "./chance.js",
+  "version": "0.4.3",
+  "description": "Chance - Utility library to generate anything random",
+  "homepage": "http://chancejs.com",
+  "author": {
+    "name": "Victor Quinn",
+    "email": "mail@victorquinn.com"
+  },
+  "bugs": {
+    "url": "https://github.com/victorquinn/chancejs/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/victorquinn/chancejs.git"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://chancejs.com/license/"
+    }
+  ],
+  "devDependencies": {
+    "chai": "1.5",
+    "grunt": "*",
+    "grunt-contrib-jshint": "~0.1.1",
+    "grunt-mocha-phantomjs": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-shell": "*",
+    "jslint": "*",
+    "mocha": "1.8",
+    "mocha-phantomjs": "2.0.3",
+    "phantomjs": "1.9.0-2",
+    "requirejs": "2.1.6",
+    "uglify-js": "1.2.6",
+    "underscore": "*"
+  },
+  "scripts": {
+    "test": "./node_modules/mocha-phantomjs/bin/mocha-phantomjs test/runner.html"
+  },
+  "keywords": [
+    "random",
+    "generator",
+    "test",
+    "mersenne",
+    "name",
+    "address",
+    "dice"
+  ],
+  "readme": "# Chance\n\n[![Chance Logo](http://chancejs.com/logo.png)](http://chancejs.com)\n\n[![Build Status](https://travis-ci.org/victorquinn/chancejs.png)](https://travis-ci.org/victorquinn/chancejs)\n\nChance - Random generator helper for JavaScript\n\nHomepage: [http://chancejs.com](http://chancejs.com)\n\nMany more details on [http://chancejs.com](http://chancejs.com) but this single\nlibrary can generate random numbers, characters, strings, names, addresses,\ndice, and pretty much anything else.\n\nIt includes the basic building blocks for all these items and is built on top\nof a Mersenne Twister so it can generate these things with repeatibility, if\ndesired.\n\n## Usage\n\n### Browser\n\nChance instantiates itself onto the window. This means that in the simplest case you can just include the script tag then use an instance of Chance immediately.\n\n    <script src=\"chance.js\"></script>\n    <script>\n        console.log(chance.string());\n    </script>\n\n[More info](http://chancejs.com#browser)\n\n### Bower\n\nIt can also be used with [Bower](http://bower.io)\n\n    bower install chance\n\nthen in the HTML of your app:\n\n    <!-- Load Chance -->\n    <script type=\"text/javascript\" src=\"components/chance/chance.min.js\"></script>\n    <script>\n        // Use Chance immediately!\n        alert(chance.string());\n    </script>\n\n### RequireJS\n\nChance also includes an AMD define so it can be used with RequireJS.\n\n    require(['Chance'], function(Chance) {\n        // Instantiate\n        var chance = new Chance();\n       \n        // Then just use it:\n        var my_random_integer = chance.integer();\n    });\n\n\n### Node.js\n\nAnd it can be used in Node.js.\n\n    var Chance = require('chance'),\n        chance = new Chance();\n        \n    // Get a random zip code\n    chance.zip();\n\n\n## Author\n### Victor Quinn\n[http://victorquinn.com](http://victorquinn.com)\n\nPlease feel free to reach out to me if you have any questions or suggestions.\n\n### Contributors\n\nTHANK YOU!\n\n```\n project  : chancejs\n repo age : 6 weeks\n active   : 35 days\n commits  : 186\n files    : 19\n authors  :\n   140\tVictor Quinn            75.3%\n    11\tTim Petricola           5.9%\n    11\tdavmillar               5.9%\n     5\tMatt Klaber             2.7%\n     5\tMichael Cordingley      2.7%\n     3\tqjcg                    1.6%\n     2\tdhilipsiva              1.1%\n     2\tKevin Garnett           1.1%\n     2\tpath411                 1.1%\n     2\tAndreas Koeberle        1.1%\n     1\tRichard Anaya           0.5%\n     1\tleesei                  0.5%\n     1\tRyan Tenney             0.5%\n```\n\nThis project is licensed under the [MIT License](http://en.wikipedia.org/wiki/MIT_License) so feel free to hack away :)\n",
+  "readmeFilename": "README.md",
+  "_id": "chance@0.4.3",
+  "dist": {
+    "shasum": "9e6f56449673a5ebe26a3475aa766917951daf10"
+  },
+  "_from": "chance@*",
+  "_resolved": "https://registry.npmjs.org/chance/-/chance-0.4.3.tgz"
+}

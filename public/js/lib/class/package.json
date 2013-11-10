@@ -1,0 +1,44 @@
+{
+  "name": "class.js",
+  "description": "A simple and efficient class inheritance implementation based on John Resig's code.",
+  "keywords": [
+    "class",
+    "oo",
+    "oop",
+    "inheritance"
+  ],
+  "version": "0.0.1",
+  "author": {
+    "name": "Ivan Zhidkov",
+    "email": "scaryzet@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/scaryzet/class.js.git"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  },
+  "license": {
+    "type": "MIT",
+    "url": "https://raw.github.com/scaryzet/class.js/master/LICENSE"
+  },
+  "readme": "[class.js](https://github.com/scaryzet/class.js)\r\n================================================\r\n\r\nSimple and efficient class inheritance based on John Resig's code (\"Simple JavaScript Inheritance\" and \"Simple Class Instantiation\").\r\n\r\nWritten for being used with node.js.\r\n\r\nInstallation\r\n------------\r\n\r\n```\r\nnpm install class.js\r\n```\r\n\r\nExample\r\n-------\r\n\r\n```javascript\r\nvar Class = require('class.js');\r\n\r\n// Create a class.\r\n\r\nvar A = Class({\r\n\t// Contructor's code should be put into init().\r\n\tinit: function(x) {\r\n\t\tthis.x = x;\r\n\t},\r\n    f: function() {\r\n    \tthis.x += 2;\r\n    }\r\n});\r\n\r\n// Instantiate.\r\n\r\nvar a = new A(7); // init(7) is called.\r\n\r\n// This way is valid too, in case you accidentally forgot to write \"new\":\r\n\r\nvar a2 = A(7);\r\n\r\n// Also, you have the magic \"_parent()\" method which allows you\r\n// to call a method of the same name from the parent class.\r\n\r\n// Let's create a child class.\r\n\r\nvar B = A.extend({\r\n\tinit: function(x) {\r\n\t\t// Call the parent constructor:\r\n\t\tthis._parent(x / 2);\r\n\t},\r\n\tf: function() {\r\n\t\t// Call the f() from \"A\":\r\n\t\tthis._parent();\r\n\r\n\t\t// Do something specific to \"B\" here...\r\n        this.x += 3;\r\n\t},\r\n\tg: function(a, b) {\r\n\t\t// Some code here...\r\n\t}\r\n});\r\n\r\n// The keyword \"instanceof\" works.\r\n\r\nvar X = Class({ /* ... */ });\r\nvar Y = X.extend({ /* ... */ });\r\n\r\nvar b = new B(11);\r\nvar x = new X();\r\nvar y = new Y();\r\n\r\na instanceof A; // true\r\nb instanceof B; // true\r\nb instanceof A; // true\r\nx instanceof X; // true\r\ny instanceof Y; // true\r\ny instanceof X; // true\r\n\r\na instanceof B; // false\r\nx instanceof Y; // false\r\n\r\nx instanceof A; // false\r\nb instanceof Y; // false\r\n\r\n// If you have the urge to call an arbitrary parent's method\r\n// from a child class, the way to do it (as of now) is the following:\r\n\r\nvar C = B.extend({\r\n\tinit: function() { /* ... */ }\r\n    x: function() {\r\n    \tA.prototype.f.call(this);\r\n    }\r\n});\r\n```\r\n\r\nUseful JsDoc for your IDE\r\n-------------------------\r\n\r\n```javascript\r\n/** @class */\r\nvar A = Class(/** @lends A */ {\r\n\t/** @constructor */\r\n\tinit: function() { /* ... */ }\r\n\tf: function() { /* ... */ }\r\n});\r\n\r\n/**\r\n * @class\r\n * @extends A\r\n */\r\nvar B = A.extend(/** @lends B */ {\r\n\t/** @constructor */\r\n\tinit: function() { /* ... */ }\r\n\tg: function() { /* ... */ }\r\n});\r\n```\r\n\r\nAbout\r\n-----\r\n * Copyright 2012, Ivan Zhidkov.\r\n * Released under the MIT License.\r\n * Based on [Simple JavaScript Inheritance](http://ejohn.org/blog/simple-javascript-inheritance/) and [Simple Class Instantiation](http://ejohn.org/blog/simple-class-instantiation/) by John Resig (MIT Licensed).\r\n",
+  "readmeFilename": "README.md",
+  "bugs": {
+    "url": "https://github.com/scaryzet/class.js/issues"
+  },
+  "_id": "class.js@0.0.1",
+  "dist": {
+    "shasum": "2e4401d7a74224dfae3f079a1496ef0458d85521"
+  },
+  "_from": "class.js@*",
+  "_resolved": "https://registry.npmjs.org/class.js/-/class.js-0.0.1.tgz"
+}

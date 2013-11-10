@@ -1,0 +1,40 @@
+{
+  "name": "socket-ntp",
+  "version": "0.0.1",
+  "main": "lib/ntp",
+  "description": "NTP syncing algorithm between client and server using socket.io",
+  "keywords": [
+    "ntp",
+    "socket",
+    "socket.io"
+  ],
+  "author": {
+    "name": "Calvin French-Owen",
+    "email": "calvin@calv.info"
+  },
+  "scripts": {
+    "start": "node example/app.js"
+  },
+  "devDependencies": {
+    "express": "3.0.2",
+    "socket.io": "*"
+  },
+  "engines": {
+    "node": "0.8.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:calvinfo/socket-ntp.git"
+  },
+  "readme": "socket-ntp\n==========\n\nNTP Sync using Socket.io. Allows you to sync clients against a server by calculating the time offset.\n\n## Installation\n\n```\nnpm install socket-ntp\n```\nRequires access to [socket.io](http://socket.io/) connections on both the client and the server.\n\n## Client usage\n\nOn the client, include:\n\n```html\n<script src=\"/javascripts/libs/socket.io.min.js\"></script>\n<script src=\"/client/ntp.js\"></script>\n```\n\n```javascript\n\n  var socket = io.connect();\n  ntp.init(socket);  \n\n  var offset = ntp.offset(); // time offset from the server in ms \n```\n\n## Server usage\n\nFrom anywhere that you have access to a socket.io instance.\n\n```javascript\nvar ntp = require('socket-ntp');\n\nio.sockets.on('connection', function (socket) {\n  ntp.sync(socket);\n});\n```\n\n## Demo\n\nTo start the demo run:\n\n```\nnode example/app.js\n```\n\n### License\n\n(The MIT License)\n\nCopyright (c) 2012 Calvin French-Owen &lt;calvin@calv.info&gt;\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n'Software'), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.\nIN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY\nCLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,\nTORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE\nSOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
+  "readmeFilename": "README.md",
+  "bugs": {
+    "url": "https://github.com/calvinfo/socket-ntp/issues"
+  },
+  "_id": "socket-ntp@0.0.1",
+  "dist": {
+    "shasum": "ab15efeef670893c2945d288789a8d96ff52306b"
+  },
+  "_from": "socket-ntp@*",
+  "_resolved": "https://registry.npmjs.org/socket-ntp/-/socket-ntp-0.0.1.tgz"
+}
