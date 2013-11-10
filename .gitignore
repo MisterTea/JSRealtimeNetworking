@@ -1,3 +1,6 @@
+# Bundle #
+public/js/bundle.js
+
 *.class
 
 # Package Files #

@@ -8,7 +8,7 @@
   "scripts": {
     "client": "node build.js",
     "server": "node server/app.js",
-    "test": "node test/test-sync.js",
+    "test": "node test/test-sync.js"
   },
   "repository": {
     "type": "git",
