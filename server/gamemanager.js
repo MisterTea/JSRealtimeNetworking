@@ -1,3 +1,5 @@
+// Published under the BSD License by Jason Gauci (jgmath2000@gmail.com)
+
 var Chance = require("chance");
 var Class = require("class.js");
 var _ = require("underscore");

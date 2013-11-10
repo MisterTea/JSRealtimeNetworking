@@ -1,3 +1,5 @@
+// Published under the BSD License by Jason Gauci (jgmath2000@gmail.com)
+
 var socketio = require("socket.io");
 var Game = require('../common/game.js');
 var g = require('../common/globals.js');

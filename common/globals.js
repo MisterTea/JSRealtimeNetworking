@@ -1,3 +1,5 @@
+// Published under the BSD License by Jason Gauci (jgmath2000@gmail.com)
+
 module.exports = {
   /*** Utility Functions ***/
   intdiv: function(n, d) {

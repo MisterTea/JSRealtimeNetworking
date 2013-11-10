@@ -1,3 +1,5 @@
+// Published under the BSD License by Jason Gauci (jgmath2000@gmail.com)
+
 var g = require("./globals.js");
 
 module.exports = {

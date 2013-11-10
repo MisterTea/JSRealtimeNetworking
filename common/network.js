@@ -1,3 +1,5 @@
+// Published under the BSD License by Jason Gauci (jgmath2000@gmail.com)
+
 var Game = require("./game.js");
 var deepEqual = require('deep-equal');
 var g = require("./globals.js");

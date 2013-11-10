@@ -1,3 +1,5 @@
+// Published under the BSD License by Jason Gauci (jgmath2000@gmail.com)
+
 var fs = require("fs");
 var browserify = require('browserify'),
   shim = require('browserify-shim');
