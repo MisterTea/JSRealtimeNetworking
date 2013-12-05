@@ -116,9 +116,10 @@ io.sockets.on('connection', function(socket) {
           socket.emit('serverinit', {
             startTime: game.startTime,
             tick: game.tick,
-            stateHistory: clone(game.stateHistory),
-            commandHistory: clone(game.commandHistory)
+            stateHistory: game.stateHistory,
+            commandHistory: game.commandHistory
           });
+          console.log("Join command sent");
 
           var command = {};
           command[playerId] = [g.PLAYER_JOIN];

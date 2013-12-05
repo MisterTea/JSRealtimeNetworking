@@ -6,12 +6,8 @@ var geom = require("./geometry.js");
 var chance = require("chance");
 
 module.exports = {
-  rng: new chance.Chance(1),
-
   init: function(seed) {
-    if (seed) {
-      this.rng = new chance.Chance(seed);
-    }
+    this.rng = new chance.Chance(seed);
   },
 
   getCommands: function(game, player) {
