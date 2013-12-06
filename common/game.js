@@ -56,7 +56,9 @@ module.exports = Class({
 
     this.renderer = new Renderer(this, canvas);
 
-    this.startTime = this.network.getNetworkTime();
+    // For the server and when running locally, set the start time.  For clients,
+    // this time will be overwritten by the server after this function.
+	this.startTime = Date.now();
 
     if (g.MS_PER_TICK == 0) {
       console.log("Calling tick directly");
@@ -95,13 +97,13 @@ module.exports = Class({
         }
       }
 
+      if (this.lastServerTick < this.tick) {
+        console.log("Waiting for server ACK");
+        break;
+      }
       if (!g.CLIENT_SIDE_PREDICTION && this.tick > 0) {
         // Do not advance state until we have everyone's input for the tick.
         var doBreak = false;
-        if (this.lastServerTick < this.tick) {
-          console.log("Waiting for server ACK");
-          break;
-        }
         for (var playerName in this.stateHistory[this.tick - 1].connectedClients) {
           if (this.lastCommandMs[playerName] < this.tick * g.MS_PER_TICK) {
             // Check future ticks for commands.  If we have them,
@@ -180,6 +182,23 @@ module.exports = Class({
     }
 
     this.tick++;
+
+      // HACK: Assume that we don't need states older than X and clear
+      // them.
+      for (var tick in this.stateHistory) {
+        if (tick + 100 < this.tick) {
+          delete this.stateHistory[tick];
+        }
+      }
+
+      // HACK #2: Assume we don't need commands older than 5s and
+      // delete them.
+      var currentMs = this.tick * g.MS_PER_TICK;
+      for (var ms in this.commandHistory) {
+        if (ms + 5000 < currentMs) {
+          delete this.commandHistory[ms];
+	}
+      }
   },
 
   inGameTick: function() {
@@ -370,7 +389,9 @@ module.exports = Class({
     }
   },
   sendRemoteCommands: function() {
-    this.network.sendCommands(this.tick, input.getCommands(this));
+		if (!g.IS_NODEJS) {
+			this.network.sendCommands(this.tick, input.getCommands(this));
+		}
   },
   processCommands: function() {
     var state = this.currentState();
@@ -449,7 +470,7 @@ module.exports = Class({
   },
   resetGame: function() {
     var state = this.currentState();
-    previousPlayerIds = [];
+    var previousPlayerIds = [];
     for (var playerId in state.connectedClients) {
       previousPlayerIds.push(playerId);
     }

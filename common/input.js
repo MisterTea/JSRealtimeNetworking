@@ -36,7 +36,7 @@ module.exports = {
   },
 
   getCommands: function(game) {
-    commands = [];
+    var commands = [];
     if ('87' in this.keys) {
       commands.push(g.MOVE_UP);
     }

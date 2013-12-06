@@ -87,8 +87,8 @@ var applyCommand = function(gameId, playerId, ms, commandlist) {
   // Apply the commandlist on the server
   game.addCommand(ms, playerId, commandlist);
 
-  // Broadcast the commandlist to the clients
-  io.sockets.emit("serverinput", {
+  // Broadcast the commandlist to the other clients
+  io.sockets.in(game.id).emit("serverinput", {
     ms: ms,
     commands: commandlist,
     playerId: playerId
@@ -98,6 +98,9 @@ var applyCommand = function(gameId, playerId, ms, commandlist) {
 io.sockets.on('connection', function(socket) {
   ntp.sync(socket);
   socket.on('clientinit', function(data) {
+    // Join the game room
+    socket.join(data.gameid);
+
     // Wait 3 seconds before accepting the client so the ntp
     // accuracy can improve.
     setTimeout(function() {
@@ -112,12 +115,12 @@ io.sockets.on('connection', function(socket) {
             data.gameid,
             data.tokenid,
             firstCommandMs);
-          console.log("Sending join command");
+          console.log("Sending join command with " + Object.keys(game.stateHistory).length + " states and " + Object.keys(game.commandHistory).length + " commands.");
           socket.emit('serverinit', {
             startTime: game.startTime,
             tick: game.tick,
-            stateHistory: clone(game.stateHistory),
-            commandHistory: clone(game.commandHistory)
+            stateHistory: game.stateHistory,
+            commandHistory: game.commandHistory
           });
 
           var command = {};

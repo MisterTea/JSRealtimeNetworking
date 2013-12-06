@@ -8,9 +8,7 @@ var io = null;
 var ntp = null;
 var fabric = null;
 
-if (g.IS_NODEJS) {
-  // We are running inside nodejs
-} else {
+if (!g.IS_NODEJS) {
   io = require("socket.io-client/dist/socket.io.js");
   ntp = require("ntpclient");
   fabric = require("fabric");
@@ -20,7 +18,7 @@ module.exports = {
   remoteCommands: {},
   playerId: null,
   game: null,
-  init: function(gameId, playerId) {
+  init: function(gameId, playerId, token) {
     this.playerId = playerId;
 
     if (g.IS_NODEJS) {
@@ -43,6 +41,8 @@ module.exports = {
       // create a wrapper around native canvas element (with id="c")
       var canvas = new fabric.StaticCanvas('c');
       outerThis.game = new Game(gameId, outerThis, canvas);
+
+      // Override some of the client's game with server data.
       outerThis.game.startTime = data.startTime;
       outerThis.game.stateHistory = data.stateHistory;
       outerThis.game.commandHistory = data.commandHistory;
@@ -115,7 +115,7 @@ module.exports = {
     this.game.lastServerTick = Math.max(this.game.lastServerTick, data.tick);
   },
   getNetworkTime: function() {
-    if (typeof window === 'undefined') {
+    if (g.IS_NODEJS) {
       // The server's time is ground truth
       return Date.now();
     }
@@ -127,11 +127,6 @@ module.exports = {
   },
   lastProcessMs: -1,
   sendCommands: function(tick, commands) {
-    if (typeof window === 'undefined') {
-      // Only runs client-side
-      return;
-    }
-
     var processMs = (tick * g.MS_PER_TICK) + g.LATENCY_MS;
 
     if (this.lastProcessMs >= processMs) {

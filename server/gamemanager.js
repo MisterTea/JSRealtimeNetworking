@@ -5,7 +5,6 @@ var Class = require("class.js");
 var _ = require("underscore");
 
 var Game = require("../common/game.js");
-var network = require("../common/network.js");
 var g = require('../common/globals.js');
 
 var chance = new Chance();
@@ -14,7 +13,7 @@ exports.io = null;
 
 var preTickCallback = function(game) {
   if (!g.LOCKSTEP) {
-    exports.io.sockets.emit('serverstate', {
+    exports.io.sockets.in(game.id).emit('serverstate', {
       state: game.stateHistory[game.tick],
       tick: game.tick,
       commands: game.commandHistory[game.tick]
@@ -23,7 +22,7 @@ var preTickCallback = function(game) {
 
   // Push out server commands.
   var handler = getGameHandler(game.id);
-  exports.io.sockets.emit("servercommand", {
+  exports.io.sockets.in(game.id).emit("servercommand", {
     tick: game.tick + g.LATENCY,
     commands: handler.serverCommand
   });
@@ -36,7 +35,12 @@ var ServerGameHandler = Class({
   init: function(id) {
     this.id = id;
     this.tokenPlayerMap = {};
-    this.game = new Game(id, network, null, preTickCallback);
+		var dummyNetwork = {
+			getNetworkTime: function() {
+				return Date.now();
+			}
+		};
+    this.game = new Game(id, dummyNetwork, null, preTickCallback);
     this.game.lastServerTick = g.MAX_TICK;
     this.playerServerData = {};
     this.serverCommand = {};
@@ -74,7 +78,7 @@ exports.registerRemotePlayer = function(gameid, token, firstCommandMs) {
   }
 };
 
-exports.getGameHandler = getGameHandler = function(gameId) {
+var getGameHandler = exports.getGameHandler = function(gameId) {
   var handler = gameHandlers[gameId];
   return handler;
 };

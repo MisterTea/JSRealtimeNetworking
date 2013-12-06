@@ -2,9 +2,6 @@
 
 var app = null;
 
-token = null;
-playerId = null;
-
 var angular = require("angular");
 var angularCookies = require("angularcookies");
 var Game = require("../../common/game.js");
@@ -27,7 +24,7 @@ var qs = (function(a) {
 })(window.location.search.substr(1).split('&'));
 
 app.controller('WelcomeCtrl', function($cookies, $location) {
-  playerId = qs['playerid'];
+  var playerId = qs['playerid'];
   console.log(playerId);
   if (!playerId) {
     // This shouldn't happen
@@ -35,17 +32,9 @@ app.controller('WelcomeCtrl', function($cookies, $location) {
   }
   var gameId = qs['gameid'];
 
-  console.log("EXECUTING WELCOME CONTROL");
-  console.log($cookies);
-  console.log($cookies.token);
-  token = $cookies.token;
+  var token = $cookies.token;
 
-  // Retrieving a cookie
-  var favoriteCookie = $cookies.myFavorite;
-  // Setting a cookie
-  $cookies.myFavorite = 'oatmeal';
-
-  network.init(gameId, playerId);
+  network.init(gameId, playerId, token);
 });
 
 
