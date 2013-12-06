@@ -9,8 +9,8 @@ module.exports = {
   /*** Parameters **/
 
   // If true, simulate 'lockstep' networking, where the server cannot
-  // send the state of the game because it is too large (e.g. a
-  // minecraft world).
+  // send the state of the game frequently because it is too large
+  // (e.g. a minecraft world).
   LOCKSTEP: true,
 
   // If true, allow the clients to move ahead of the server,

@@ -38,6 +38,7 @@ module.exports = {
       tokenid: token
     });
     socket.on('serverinit', function(data) {
+      console.log("GOT SERVER INIT");
       // create a wrapper around native canvas element (with id="c")
       var canvas = new fabric.StaticCanvas('c');
       outerThis.game = new Game(gameId, outerThis, canvas);

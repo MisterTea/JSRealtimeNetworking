@@ -31,7 +31,6 @@ module.exports = Class({
     this.tick = 0;
     this.abort = false;
 
-    ai.init();
     input.init();
 
     this.stateHistory[0] = {
@@ -97,10 +96,13 @@ module.exports = Class({
         }
       }
 
+      // Do not advance if we don't have future server events, even
+      // when doing client side prediction.
       if (this.lastServerTick < this.tick) {
         console.log("Waiting for server ACK");
         break;
       }
+
       if (!g.CLIENT_SIDE_PREDICTION && this.tick > 0) {
         // Do not advance state until we have everyone's input for the tick.
         var doBreak = false;
@@ -156,10 +158,7 @@ module.exports = Class({
   },
 
   advanceState: function() {
-    if (!(this.tick in this.stateHistory)) {
-      if (!((this.tick - 1) in this.stateHistory)) {
-        throw "OOPS";
-      }
+    if (((this.tick - 1) in this.stateHistory)) {
       // Prepare a new State
       this.stateHistory[this.tick] = clone(this.stateHistory[this.tick - 1]);
       this.stateHistory[this.tick].tick = this.tick;
@@ -183,14 +182,17 @@ module.exports = Class({
 
     this.tick++;
 
-      // HACK: Assume that we don't need states older than X and clear
+    if (this.tick % g.TICKS_PER_SECOND == 0) {
+      // HACK: Assume that we don't need states older than 2s and clear
       // them.
       for (var tick in this.stateHistory) {
-        if (tick + 100 < this.tick) {
+        if (tick + g.intdiv(2000,g.MS_PER_TICK) < this.tick) {
           delete this.stateHistory[tick];
         }
       }
+    }
 
+    if (this.tick % g.TICKS_PER_SECOND == g.intdiv(g.TICKS_PER_SECOND,2)) {
       // HACK #2: Assume we don't need commands older than 5s and
       // delete them.
       var currentMs = this.tick * g.MS_PER_TICK;
@@ -199,6 +201,7 @@ module.exports = Class({
           delete this.commandHistory[ms];
 	}
       }
+    }
   },
 
   inGameTick: function() {
@@ -334,26 +337,26 @@ module.exports = Class({
       for (var i = 0; i < playerCommands.length; i++) {
         var command = playerCommands[i];
         switch (command) {
-          case g.PLAYER_LEAVE:
-            if (player) {
-              console.log("Player " + player.id + " has left");
-              player.input = g.AI;
-            }
-            delete state.connectedClients[player.id];
-            break;
-          case g.PLAYER_JOIN:
-            console.log("Player " + playerName + " has joined");
-            if (playerName in state.players) {
-              player.input = g.REMOTE;
-            } else {
-              this.addPlayer(playerName, g.REMOTE);
-            }
-            this.updateLastCommandMs(playerName, this.tick * g.MS_PER_TICK);
-            state.connectedClients[playerName] = true;
-            this.getCommands(this.tick * g.MS_PER_TICK)[playerName] = [];
-            break;
-          default:
-            throw "OOPS " + command;
+        case g.PLAYER_LEAVE:
+          if (player) {
+            console.log("Player " + player.id + " has left");
+            player.input = g.AI;
+          }
+          delete state.connectedClients[player.id];
+          break;
+        case g.PLAYER_JOIN:
+          console.log("Player " + playerName + " has joined");
+          if (playerName in state.players) {
+            player.input = g.REMOTE;
+          } else {
+            this.addPlayer(playerName, g.REMOTE);
+          }
+          this.updateLastCommandMs(playerName, this.tick * g.MS_PER_TICK);
+          state.connectedClients[playerName] = true;
+          this.getCommands(this.tick * g.MS_PER_TICK)[playerName] = [];
+          break;
+        default:
+          throw "OOPS " + command;
         }
       }
     }
@@ -372,6 +375,11 @@ module.exports = Class({
     var state = this.currentState();
     var commands = this.getCommands(this.tick * g.MS_PER_TICK);
     var players = state.players;
+
+    // We initialize the AI's random number generator every frame to
+    // keep all clients in sync.  To keep things interesting, we use
+    // the tick as the seed.
+    ai.init(state.tick);
 
     for (var playerName in state.players) {
       var player = players[playerName];
@@ -410,38 +418,38 @@ module.exports = Class({
       for (var i = 0; i < playerCommands.length; i++) {
         var command = playerCommands[i];
         switch (command) {
-          case g.TURN_LEFT:
-            player.direction = (player.direction + 3) % 4;
-            break;
-          case g.TURN_RIGHT:
-            player.direction = (player.direction + 1) % 4;
-            break;
-          case g.UP:
-          case g.RIGHT:
-          case g.DOWN:
-          case g.LEFT:
-            if ((command + 2) % 4 == player.direction) {
-              // Command and player direction are opposite, ignore
-            } else {
-              player.direction = command;
-            }
-            break;
-          case g.PLAYER_LEAVE:
-            if (player) {
-              console.log("Player " + player.id + " has left");
-              player.input = g.AI;
-            }
-            break;
-          case g.PLAYER_JOIN:
-            console.log("Player " + playerName + " has joined");
-            if (playerName in state.players) {
-              player.input = g.REMOTE;
-            } else {
-              this.addPlayer(playerName, g.REMOTE);
-            }
-            break;
-          default:
-            throw "OOPS " + command;
+        case g.TURN_LEFT:
+          player.direction = (player.direction + 3) % 4;
+          break;
+        case g.TURN_RIGHT:
+          player.direction = (player.direction + 1) % 4;
+          break;
+        case g.UP:
+        case g.RIGHT:
+        case g.DOWN:
+        case g.LEFT:
+          if ((command + 2) % 4 == player.direction) {
+            // Command and player direction are opposite, ignore
+          } else {
+            player.direction = command;
+          }
+          break;
+        case g.PLAYER_LEAVE:
+          if (player) {
+            console.log("Player " + player.id + " has left");
+            player.input = g.AI;
+          }
+          break;
+        case g.PLAYER_JOIN:
+          console.log("Player " + playerName + " has joined");
+          if (playerName in state.players) {
+            player.input = g.REMOTE;
+          } else {
+            this.addPlayer(playerName, g.REMOTE);
+          }
+          break;
+        default:
+          throw "OOPS " + command;
         }
       }
     }
