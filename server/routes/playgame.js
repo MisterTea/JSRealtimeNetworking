@@ -3,7 +3,6 @@
 var Chance = require("chance");
 var Class = require("class.js");
 var Game = require("../../common/game.js");
-var network = require("../../common/network.js");
 var gameManager = require("../gamemanager.js");
 
 var chance = new Chance();
@@ -13,6 +12,7 @@ exports.handle = function(req, res) {
   var gameid = req.query.gameid;
 
   if (!gameid || !playerId) {
+    // Present the user with the "missing info" page.
     res.render("nogameid");
     return;
   }
@@ -34,8 +34,10 @@ exports.handle = function(req, res) {
     game = gameManager.createGameHandler(gameid);
   }
 
+  // Add the player to this game.
   game.addPlayer(playerId, newToken);
 
+  // Present the user with the playgame page.
   res.render('playgame', {
     playerId: playerId
   });

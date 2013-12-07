@@ -7,7 +7,6 @@ var angularCookies = require("angularcookies");
 var Game = require("../../common/game.js");
 var network = require("../../common/network.js");
 
-//var $html = angular.element(document.getElementsByTagName('html')[0]);
 app = angular.module('playGameModule', ['ngCookies']);
 app.config(function() {});
 
@@ -39,7 +38,6 @@ app.controller('WelcomeCtrl', function($cookies, $location) {
 
 
 angular.element(document).ready(function() {
-  //$html.addClass('ng-app');
   console.log("Bootstrapping");
   angular.bootstrap(document, ['playGameModule']);
   console.log("Bootstrapping");

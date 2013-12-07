@@ -4,6 +4,13 @@
  * GET home page.
  */
 
+/**
+ * Description
+ * @method index
+ * @param {} req
+ * @param {} res
+ * @return 
+ */
 exports.index = function(req, res) {
   res.render('index', {
     title: 'Express'

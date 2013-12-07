@@ -1,9 +1,10 @@
-# Bundle #
+# Bundle
 public/js/bundle.js
 
-*.class
+# Node dependency files
+node_modules
 
-# Package Files #
+# Package Files
 *.jar
 *.war
 *.ear

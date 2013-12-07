@@ -11,21 +11,21 @@ module.exports = {
   },
   translatePoint: function(point, direction) {
     switch (direction) {
-      case g.UP:
-        point.y--;
-        break;
-      case g.RIGHT:
-        point.x++;
-        break;
-      case g.DOWN:
-        point.y++;
-        break;
-      case g.LEFT:
-        point.x--;
-        break;
-      default:
-        console.trace();
-        throw "OOPS";
+    case g.UP:
+      point.y--;
+      break;
+    case g.RIGHT:
+      point.x++;
+      break;
+    case g.DOWN:
+      point.y++;
+      break;
+    case g.LEFT:
+      point.x--;
+      break;
+    default:
+      console.trace();
+      throw "OOPS";
     }
     return point;
   },
@@ -60,7 +60,7 @@ module.exports = {
     return null;
   },
   intersectOrtho: function(l1x1, l1y1, l1x2, l1y2,
-    l2x1, l2y1, l2x2, l2y2) {
+                           l2x1, l2y1, l2x2, l2y2) {
     if (l1x1 != l1x2 && l1y1 != l1y2) {
       assert("Line 1 is not othonormal");
     }
@@ -107,7 +107,7 @@ module.exports = {
       }
 
       if ((l2x1 >= l1x1 && l2x1 <= l1x2) ||
-        (l2x2 >= l1x1 && l2x2 <= l1x2)) {
+          (l2x2 >= l1x1 && l2x2 <= l1x2)) {
         return true;
       } else {
         return false;
@@ -121,7 +121,7 @@ module.exports = {
       }
 
       if ((l2y1 >= l1y1 && l2y1 <= l1y2) ||
-        (l2y2 >= l1y1 && l2y2 <= l1y2)) {
+          (l2y2 >= l1y1 && l2y2 <= l1y2)) {
         return true;
       } else {
         return false;

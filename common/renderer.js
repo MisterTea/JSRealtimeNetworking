@@ -59,9 +59,9 @@ module.exports = Class({
     if (this.canvas == null) {
       return;
     }
-    //console.log("Updating canvas");
 
-    for (var playerName in this.playerRenderData) {
+    var playerName = null;
+    for (playerName in this.playerRenderData) {
       if (!(playerName in state.players)) {
         // Delete rendering data for players that don't exist anymore.
         this.canvas.remove(this.playerRenderData[playerName].vehicle);
@@ -70,7 +70,7 @@ module.exports = Class({
       }
     }
 
-    for (var playerName in state.players) {
+    for (playerName in state.players) {
       if (!(playerName in this.playerRenderData)) {
         // Add rendering metadata.
         this.playerRenderData[playerName] = {

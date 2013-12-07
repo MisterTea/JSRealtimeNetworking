@@ -1,8 +1,8 @@
 // Published under the BSD License by Jason Gauci (jgmath2000@gmail.com)
 
 var fs = require("fs");
-var browserify = require('browserify'),
-  shim = require('browserify-shim');
+var browserify = require('browserify');
+var shim = require('browserify-shim');
 
 shim(browserify(), {
   "angular": {
@@ -23,12 +23,15 @@ shim(browserify(), {
   "ntpclient": {
     path: './public/js/lib/socket-ntp/client/ntp.js',
     exports: 'ntp'
-  },
+  }
 })
   .require(require.resolve('./public/js/main.js'), {
     entry: true
   })
   .bundle({}, function(err, src) {
-    if (err) return console.error(err);
+    if (err) {
+      console.error(err);
+      return;
+    }
     fs.writeFileSync("./public/js/bundle.js", src);
   });

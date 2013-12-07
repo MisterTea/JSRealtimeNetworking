@@ -57,7 +57,7 @@ module.exports = Class({
 
     // For the server and when running locally, set the start time.  For clients,
     // this time will be overwritten by the server after this function.
-	this.startTime = Date.now();
+    this.startTime = Date.now();
 
     if (g.MS_PER_TICK == 0) {
       console.log("Calling tick directly");
@@ -80,6 +80,10 @@ module.exports = Class({
     return this.stateHistory[this.tick];
   },
 
+  /**
+   * Heartbeat function that is called repeatedly.
+   * @method update
+   */
   update: function() {
     // Keep advancing the game state as long as we are behind
     // real-time.
@@ -98,7 +102,7 @@ module.exports = Class({
 
       // Do not advance if we don't have future server events, even
       // when doing client side prediction.
-      if (this.lastServerTick < this.tick) {
+      if (!g.IS_NODEJS && this.lastServerTick < this.tick) {
         console.log("Waiting for server ACK");
         break;
       }
@@ -157,6 +161,11 @@ module.exports = Class({
     return this.stateHistory[this.tick - 1];
   },
 
+  /**
+   * Advance the game by one state.
+   * @method advanceState
+   * @return
+   */
   advanceState: function() {
     if (((this.tick - 1) in this.stateHistory)) {
       // Prepare a new State
@@ -169,15 +178,18 @@ module.exports = Class({
       // Start a new game
       this.resetGame();
     }
+
     this.handleServerCommands();
-    if (this.tickCallback) {
-      this.tickCallback(this);
-    }
     this.handleLocalCommands();
     this.sendRemoteCommands();
     if (state.tick >= state.gameStartTick) {
       this.processCommands();
       this.inGameTick();
+    }
+
+    // Fire the post-tick callback
+    if (this.tickCallback) {
+      this.tickCallback(this);
     }
 
     this.tick++;
@@ -199,7 +211,7 @@ module.exports = Class({
       for (var ms in this.commandHistory) {
         if (ms + 5000 < currentMs) {
           delete this.commandHistory[ms];
-	}
+        }
       }
     }
   },
@@ -252,6 +264,7 @@ module.exports = Class({
       geom.translatePoint(player, player.direction);
     }
   },
+
   getCommands: function(ms) {
     //console.log("Getting commands at " + tick);
     if (!(ms in this.commandHistory)) {
@@ -259,6 +272,7 @@ module.exports = Class({
     }
     return this.commandHistory[ms];
   },
+
   getMostRecentPastCommandList: function(ms, playerId) {
     var state = this.stateHistory[g.intdiv(ms, g.MS_PER_TICK)];
     if (state) {
@@ -298,6 +312,7 @@ module.exports = Class({
 
     return commandList;
   },
+
   addCommand: function(ms, playerId, commandList) {
     this.getCommands(ms)[playerId] = commandList;
     if (this.lastCommandMs[playerId] >= ms) {
@@ -314,7 +329,7 @@ module.exports = Class({
       this.tick = newTick;
     }
   },
-  applyCommands: function() {},
+
   handleServerCommands: function() {
     // Create some local variables for convienience
     var state = this.currentState();
@@ -361,6 +376,7 @@ module.exports = Class({
       }
     }
   },
+
   updateLastCommandMs: function(playerName, ms) {
     if (!(playerName in this.lastCommandMs)) {
       this.lastCommandMs[playerName] = ms;
@@ -370,6 +386,7 @@ module.exports = Class({
       this.lastCommandMs[playerName],
       ms);
   },
+
   handleLocalCommands: function() {
     // Create some local variables for convienience
     var state = this.currentState();
@@ -396,11 +413,13 @@ module.exports = Class({
       }
     }
   },
+
   sendRemoteCommands: function() {
-		if (!g.IS_NODEJS) {
-			this.network.sendCommands(this.tick, input.getCommands(this));
-		}
+    if (!g.IS_NODEJS) {
+      this.network.sendCommands(this.tick, input.getCommands(this));
+    }
   },
+
   processCommands: function() {
     var state = this.currentState();
     var commands = this.getCommands(this.tick * g.MS_PER_TICK);
@@ -454,6 +473,7 @@ module.exports = Class({
       }
     }
   },
+
   addPlayer: function(playerName, input) {
     console.log("Adding player: " + playerName);
     var state = this.currentState();
@@ -476,6 +496,7 @@ module.exports = Class({
       }]
     };
   },
+
   resetGame: function() {
     var state = this.currentState();
     var previousPlayerIds = [];
@@ -490,6 +511,7 @@ module.exports = Class({
       this.addPlayer("AI" + j, g.AI);
     }
   },
+
   playerCrash: function(playerName, reason) {
     var state = this.currentState();
     console.log("PLAYER: " + playerName + " CRASHED: " + reason);

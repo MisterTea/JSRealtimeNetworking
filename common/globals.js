@@ -2,6 +2,7 @@
 
 module.exports = {
   /*** Utility Functions ***/
+
   intdiv: function(n, d) {
     return~~ (n / d);
   },
@@ -71,17 +72,12 @@ module.exports = {
   TICKS_PER_SECOND: 100,
   MS_PER_TICK: 10, // 1000 / TICKS_PER_SECOND
 
-  // Expected Latency in ticks (TODO: Estimate this based on ping).
-  // Note that this must be at least enough time to cover gaps in the
-  // input.
+  // Expected Latency in ticks (TODO: Estimate this value on a
+  // per-client basis, based on a Beta filter of historical packet
+  // latency).
   LATENCY_MS: 100,
   LATENCY: 10, // LATENCY_MS / MS_PER_TICK
 
-  // Simulate additional latency for testing poor connections (in
-  // milliseconds).
-  SIMULATED_NETWORK_LATENCY: 400,
-
-  FAIL_IF_MISSING_INPUT: false,
-
-  MAX_TICK: 1000000000
+  // Extra checking when running without client-side prediction.
+  FAIL_IF_MISSING_INPUT: false
 };

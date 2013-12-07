@@ -3,27 +3,20 @@
 var Game = require("./game.js");
 var deepEqual = require('deep-equal');
 var g = require("./globals.js");
-
-var io = null;
-var ntp = null;
-var fabric = null;
-
-if (!g.IS_NODEJS) {
-  io = require("socket.io-client/dist/socket.io.js");
-  ntp = require("ntpclient");
-  fabric = require("fabric");
-}
+var io = require("socket.io-client/dist/socket.io.js");
+var ntp = require("ntpclient");
+var fabric = require("fabric");
 
 module.exports = {
   remoteCommands: {},
   playerId: null,
   game: null,
+
   init: function(gameId, playerId, token) {
     this.playerId = playerId;
 
     if (g.IS_NODEJS) {
-      // Only runs client-side
-      return;
+      throw "OOPS";
     }
 
     var socket = io.connect('http://' + window.location.hostname + ':' + window.location.port);
@@ -64,6 +57,13 @@ module.exports = {
     });
   },
   lastOffset: 0,
+
+  /**
+   * Handle a packet containing a server state.
+   * @method handleServerState
+   * @param {JSON} data
+   * @return
+   */
   handleServerState: function(data) {
     if (this.game == null) {
       // Wait until the game has been initialized.
@@ -88,9 +88,18 @@ module.exports = {
       // The server is not in sync with us, backtrack.
       this.game.stateHistory[data.tick] = data.state;
       this.game.commandHistory[data.tick] = data.commands;
-      this.game.tick = data.tick;
+
+      // Start on the tick after the server state (that tick is finished).
+      this.game.tick = data.tick + 1;
     }
   },
+
+  /**
+   * Handle a packet containing server input.
+   * @method handleServerInput
+   * @param {JSON} inputCommandData
+   * @return
+   */
   handleServerInput: function(inputCommandData) {
     // Wait until the game has been initialized.
     if (this.game == null) {
@@ -106,6 +115,13 @@ module.exports = {
       game.addCommand(inputCommandData.ms, inputCommandData.playerId, newCommands);
     }
   },
+
+  /**
+   * Handle a packet containing server-specific inputs.
+   * @method handleServerCommand
+   * @param {JSON} data
+   * @return
+   */
   handleServerCommand: function(data) {
     if (this.game == null) {
       setTimeout(this.handleServerCommand, 1, data);
@@ -115,6 +131,12 @@ module.exports = {
     this.game.serverCommands[data.tick] = data.commands;
     this.game.lastServerTick = Math.max(this.game.lastServerTick, data.tick);
   },
+
+  /**
+   * Get the server-offset time.
+   * @method getNetworkTime
+   * @return Time offset by NTP to server.
+   */
   getNetworkTime: function() {
     if (g.IS_NODEJS) {
       // The server's time is ground truth
@@ -124,9 +146,16 @@ module.exports = {
     if (ntp.offset() != this.lastOffset) {
       this.lastOffset = ntp.offset();
     }
-    return Date.now() - ntp.offset();
+    return (Date.now() - ntp.offset());
   },
   lastProcessMs: -1,
+
+  /**
+   * Time-Shift commands and send them to the server.
+   * @method sendCommands
+   * @param {int} tick
+   * @param {list} commands
+   */
   sendCommands: function(tick, commands) {
     var processMs = (tick * g.MS_PER_TICK) + g.LATENCY_MS;
 

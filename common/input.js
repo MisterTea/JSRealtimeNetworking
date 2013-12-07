@@ -20,7 +20,6 @@ module.exports = {
       "keydown",
       function(e) {
         that.keys[e.keyCode] = e.keyCode;
-        //console.log("PRESSED " + e.keyCode);
       },
       false);
 
@@ -30,11 +29,16 @@ module.exports = {
         // Delay releasing keys to allow the game a chance to read a
         // keydown/keyup event, even if the duration is short.
         that.keysToDelete.push(e.keyCode);
-        //console.log("RELEASED " + e.keyCode);
       },
       false);
   },
 
+  /**
+   * Get the commands based on the state of the keyboard
+   * @method getCommands
+   * @param {Game} game Pointer to a game object (not needed)
+   * @return commands The list of commands firing.
+   */
   getCommands: function(game) {
     var commands = [];
     if ('87' in this.keys) {
@@ -54,10 +58,6 @@ module.exports = {
     }
     this.keysToDelete.length = 0;
 
-    if (commands.length > 0) {
-      //console.log("GOT INPUT");
-      //console.log(commands);
-    }
     return commands;
   }
 };
